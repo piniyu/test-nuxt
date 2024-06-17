@@ -4,10 +4,7 @@
 export default defineNuxtConfig({
 	devtools: { enabled: true },
 	app: {
-		baseURL:
-			process.env.NODE_ENV === 'production'
-				? process.env.PRODUCTION_NUXT_APP_BASE_URL
-				: '/',
+		baseURL: '/test-nuxt/',
 	},
 	devServer: {
 		https: {
