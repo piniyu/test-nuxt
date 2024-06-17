@@ -3,6 +3,7 @@
 // import fs from 'fs'
 export default defineNuxtConfig({
 	devtools: { enabled: true },
+	ssr: false,
 	app: {
 		baseURL: '/test-nuxt/',
 	},

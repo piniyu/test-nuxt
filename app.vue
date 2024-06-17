@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h2>Is Chrome {{ isChromium() }}</h2>
+		<h2>Is Chrome? {{ isChromium() }}</h2>
 		<h2>Is IOS? {{ isIOS() }}</h2>
 		<p>
 			Send an SMS that includes<br />
@@ -45,10 +45,8 @@
 
 	const isChromium = () => {
 		const userAgent = navigator?.userAgent
-		console.log(userAgent)
-		if (userAgent) {
-			return userAgent.includes('Chrome') || userAgent.includes('CriOS')
-		}
+		return userAgent?.includes('Chrome') || userAgent?.includes('CriOS')
+
 		// return /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream
 	}
 
@@ -108,32 +106,39 @@
 	}
 
 	onMounted(() => {
-		if ('OTPCredential' in window && !isChromium() && window.navigator) {
-			window.addEventListener('DOMContentLoaded', e => {
-				const input = document.querySelector(
-					'input[autocomplete="one-time-code"]',
-				) as HTMLInputElement
-				if (!input) return
-				const ac = new AbortController()
-				const form = input.closest('form')
-				if (form) {
-					form.addEventListener('submit', e => {
-						ac.abort()
-					})
-				}
-				navigator.credentials
-					.get({
-						otp: { transport: ['sms'] },
-						signal: ac.signal,
-					})
-					.then(otp => {
-						input.value = otp?.code || ''
-						if (form) form.submit()
-					})
-					.catch(err => {
-						console.log(err)
-					})
-			})
+		console.log(navigator?.userAgent)
+
+		if (
+			'OTPCredential' in window &&
+			!isChromium() &&
+			window.navigator &&
+			!isIOS()
+		) {
+			// window.addEventListener('DOMContentLoaded', e => {
+			const input = document.querySelector(
+				'input[autocomplete="one-time-code"]',
+			) as HTMLInputElement
+			if (!input) return
+			const ac = new AbortController()
+			const form = input.closest('form')
+			if (form) {
+				form.addEventListener('submit', e => {
+					ac.abort()
+				})
+			}
+			navigator.credentials
+				.get({
+					otp: { transport: ['sms'] },
+					signal: ac.signal,
+				})
+				.then(otp => {
+					input.value = otp?.code || ''
+					if (form) form.submit()
+				})
+				.catch(err => {
+					console.log(err)
+				})
+			// })
 		}
 	})
 </script>
